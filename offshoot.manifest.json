@@ -1,0 +1,19 @@
+{
+    "plugins": {
+        "SerpentminimetroGamePlugin": {
+            "name": "SerpentminimetroGamePlugin",
+            "version": "0.1.0",
+            "files": [
+                {
+                    "path": "serpent_minimetro_game.py",
+                    "pluggable": "Game"
+                }
+            ],
+            "plugins": [],
+            "libraries": [],
+            "config": {
+                "fps": 2
+            }
+        }
+    }
+}
