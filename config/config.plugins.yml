@@ -1,2 +1,4 @@
+SerpentMetroKiGameAgentPlugin:
+  frame_handler: PLAY
 SerpentminimetroGamePlugin:
   fps: 2

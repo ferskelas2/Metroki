@@ -14,6 +14,21 @@
             "config": {
                 "fps": 2
             }
+        },
+        "SerpentMetroKiGameAgentPlugin": {
+            "name": "SerpentMetroKiGameAgentPlugin",
+            "version": "0.1.0",
+            "files": [
+                {
+                    "path": "serpent_MetroKi_game_agent.py",
+                    "pluggable": "GameAgent"
+                }
+            ],
+            "plugins": [],
+            "libraries": [],
+            "config": {
+                "frame_handler": "PLAY"
+            }
         }
     }
 }
