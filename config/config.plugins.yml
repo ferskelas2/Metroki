@@ -1,3 +1,5 @@
+SerpentMenueClickerGameAgentPlugin:
+  frame_handler: PLAY
 SerpentMetroKiGameAgentPlugin:
   frame_handler: PLAY
 SerpentminimetroGamePlugin:
