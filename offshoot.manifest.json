@@ -30,12 +30,12 @@
                 "frame_handler": "PLAY"
             }
         },
-        "SerpentMenueClickerGameAgentPlugin": {
-            "name": "SerpentMenueClickerGameAgentPlugin",
+        "SerpentTestGameAgentPlugin": {
+            "name": "SerpentTestGameAgentPlugin",
             "version": "0.1.0",
             "files": [
                 {
-                    "path": "serpent_MenueClicker_game_agent.py",
+                    "path": "serpent_Test_game_agent.py",
                     "pluggable": "GameAgent"
                 }
             ],
