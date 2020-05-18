@@ -70,6 +70,6 @@ class SerpentMetroKiGameAgent(serpent.game_agent.GameAgent):
 
         # Save MM
         if not self.run_count % 10:
-            self.ppo_agent.agent.save_model(directory=os.path.join(os.getcwd(), "datasets", "pacai", "ppo_model"),append_timestep=False)
+            self.ppo_agent.agent.save(directory=os.path.join(os.getcwd(), "datasets", "pacai", "ppo_model"))
             #self.dump_metadata()
         pass
