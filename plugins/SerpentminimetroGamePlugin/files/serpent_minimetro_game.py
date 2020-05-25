@@ -28,8 +28,8 @@ class SerpentminimetroGame(Game, metaclass=Singleton):
     @property
     def screen_regions(self):
         regions = {
-            "MM_Start": (245, 321, 301, 503),
-            "LS_Start": (617, 841, 664, 994)
+            "MM_Start": (245, 488, 301, 671),
+            "LS_Start": (617, 1178, 664, 1331)
         }
 
         return regions
