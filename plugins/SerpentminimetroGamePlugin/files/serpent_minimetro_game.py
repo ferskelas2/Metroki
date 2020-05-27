@@ -1,3 +1,5 @@
+import os
+
 from serpent.game import Game
 
 from .api.api import minimetroAPI
@@ -29,10 +31,22 @@ class SerpentminimetroGame(Game, metaclass=Singleton):
     def screen_regions(self):
         regions = {
             "MM_Start": (245, 488, 301, 671),
-            "LS_Start": (617, 1178, 664, 1331)
+            "LS_Start": (617, 1178, 664, 1331),
+            "Game": (2, 69, 639, 1241)
         }
 
         return regions
+
+    @property
+    def sprite_paths(self):
+        sprite_path = os.path.join(os.path.dirname(__file__), 'data/sprites')
+        sprites = {
+            'Square': os.path.join(sprite_path, 'sprite_square_0.png'),
+            'Circle': os.path.join(sprite_path, 'sprite_circle_0.png'),
+            'Triangle': os.path.join(sprite_path, 'sprite_triangle_0.png'),
+        }
+
+        return sprites
 
     @property
     def ocr_presets(self):

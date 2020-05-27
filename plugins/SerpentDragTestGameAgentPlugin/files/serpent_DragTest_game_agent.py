@@ -1,4 +1,6 @@
 import time
+import cv2
+import os
 import numpy as np
 import skimage.io
 
@@ -7,7 +9,6 @@ import serpent.input_controller
 from serpent.game_agent import GameAgent
 
 from serpent.sprite import Sprite
-
 
 from serpent.input_controller import KeyboardKey
 from serpent.input_controller import MouseButton
@@ -24,40 +25,41 @@ class SerpentDragTestGameAgent(GameAgent):
         self.frame_handler_setups["PLAY"] = self.setup_play
 
     def setup_play(self):
-        self.state = 'MM'
+        self.state = 'GG'
         pass
 
-    def find_sprite(self, sprite, game_frame=None, screen_region=None, mode="SIGNATURE_COLORS", use_global_location=True):
-        #constellation_of_pixel_images = sprite.generate_constellation_of_pixels_images()
-        location = None
+    def find_sprite(self, path, game_frame=None, screen_region=None, use_global_location=True):
+        locations = []
 
-        frame = game_frame.frame
+        frame = game_frame.grayscale_frame
 
         if screen_region is not None:
             frame = serpent.cv.extract_region_from_image(frame, screen_region)
 
-        maximum_y = frame.shape[0] - sprite.image_data.shape[0]
-        maximum_x = frame.shape[1] - sprite.image_data.shape[1]
+        image = cv2.imread(path)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        for x in range(0, maximum_x):
-            for y in range(0, maximum_y):
-                region = (x, y, x+sprite.image_data.shape[0], y+sprite.image_data.shape[1])
-                query_sprite = Sprite("QUERY", image_data=serpent.cv.extract_region_from_image(frame, region)[..., np.newaxis])
-                name = self.sprite_identifier.identify(query_sprite, mode=mode)
-                if name == sprite.name:
-                    location = region
+        res = cv2.matchTemplate(frame, image, cv2.TM_CCOEFF_NORMED)
+        threshold = .9
+        loc = np.where(res >= threshold)
+        for pt in zip(*loc[::-1]):  # Switch collumns and rows
+            location = [pt[0], pt[1], pt[0] + image.shape[0], pt[1] + image.shape[1]]
+            if location is not None and screen_region is not None and use_global_location:
+                location = (
+                    location[0] + screen_region[0],
+                    location[1] + screen_region[1],
+                    location[2] + screen_region[0],
+                    location[3] + screen_region[1]
+                )
+            locations.append(location)
+        if len(locations) != 0:
+            return locations
+        return None
 
-                    if location is not None and screen_region is not None and use_global_location:
-                        location = (
-                            location[0] + screen_region[0],
-                            location[1] + screen_region[1],
-                            location[2] + screen_region[0],
-                            location[3] + screen_region[1]
-                        )
-
-                    return location
-        return location
-        pass
+    def get_middle(self, region):
+        x = (region[2] + region[0]) / 2
+        y = (region[3] + region[1]) / 2
+        return x, y
 
     def handle_play(self, game_frame):
         if self.state == 'MM':
@@ -70,32 +72,30 @@ class SerpentDragTestGameAgent(GameAgent):
             self.input_controller.click_screen_region(MouseButton.LEFT, "LS_Start")
 
         if self.state == 'GG':
-            #image_data = skimage.io.imread("C:\\Users\\anton\\PycharmProjects\\Metroki\\plugins\\SerpentminimetroGamePlugin\\files\\data\\sprites\\sprite_square_0.png")[..., np.newaxis]
+            # sprite_circle = self.game.sprites['SPRITE_CIRCLE']
+            # sprite_square = self.game.sprites['SPRITE_SQUARE']
+            # square = os.path.dirname(__file__)
+            # print(square)
+            # sprite_triangle = self.game.sprites['SPRITE_TRIANGLE']
 
-            #sprite = Sprite("MY SPRITE", image_data=image_data)
+            # sprite_locator = SpriteLocator()
+            # print("Trying to find Sprite")
+            # location = sprite_locator.locate(sprite=sprite, game_frame=game_frame)
+            # print(location)
 
-            #query_sprite = Sprite("QUERY", image_data=image_data)
-            #sprite_name = self.sprite_identifier.identify(query_sprite, mode="SIGNATURE_COLORS")
-            #print(sprite_name)
+            #print("Trying to find Square")
+            game_region = self.game.screen_regions["Game"]
+            squares = self.find_sprite(path=self.game.sprite_paths['Square'], game_frame=game_frame)
+            circles = self.find_sprite(path=self.game.sprite_paths['Circle'], game_frame=game_frame)
 
-            #sprite_circle = self.game.sprites['SPRITE_CIRCLE']
-            sprite_square = self.game.sprites['SPRITE_SQUARE']
-            #sprite_triangle = self.game.sprites['SPRITE_TRIANGLE']
+            if squares is not None and circles is not None:
+                square = self.get_middle(squares[0])
+                print(squares[0])
+                print(square)
 
-            #sprite_locator = SpriteLocator()
-            #print("Trying to find Sprite")
-            #location = sprite_locator.locate(sprite=sprite, game_frame=game_frame)
-            #print(location)
-            #print("Trying to find Circle")
-            #location = sprite_locator.locate(sprite=sprite_circle, game_frame=game_frame)
-            #print(location)
-
-            print("Trying to find Square")
-            location = self.find_sprite(sprite=sprite_square, game_frame=game_frame)
-            print(location)
-
-            #print("Trying to find Triangle")
-            #location = sprite_locator.locate(sprite=sprite_triangle, game_frame=game_frame)
-            #print(location)
+                circle = self.get_middle(circles[0])
+                self.input_controller.drag(MouseButton.LEFT, square[0], square[1], circle[0], circle[1])
+            #     for location in locations:
+            #         print(location)
 
         pass
