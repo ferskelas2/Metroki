@@ -11,6 +11,7 @@ from serpent.utilities import Singleton
 
 class SerpentminimetroGame(Game, metaclass=Singleton):
 
+    # 1360 x 768
     def __init__(self, **kwargs):
         kwargs["platform"] = "steam"
 
