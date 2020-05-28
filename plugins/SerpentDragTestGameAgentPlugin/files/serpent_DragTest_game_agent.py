@@ -26,6 +26,7 @@ class SerpentDragTestGameAgent(GameAgent):
 
     def setup_play(self):
         self.state = 'GG'
+        self.old_regions = None
         pass
 
     def find_sprite(self, path, game_frame=None, screen_region=None, use_global_location=True):
@@ -70,6 +71,28 @@ class SerpentDragTestGameAgent(GameAgent):
                 self.input_controller.click_up(MouseButton.LEFT)
         pass
 
+    def find_points(self, regions, old_regions=None):
+        points = []
+        if old_regions is None:
+            old_regions = []
+        for region in regions:
+            point = self.get_middle(region)
+            add = True
+            for old in old_regions:
+                if point_in_region(point, old):
+                    add = False
+                    break
+            points.append(point)
+            old_regions.append(region)
+        return points, old_regions
+
+    def point_in_region(self, point, region):
+        x1, y1, x2, y2 = region
+        x, y = point
+        if x1 < x < x2 and y1 < y < y2:
+            return True
+        return False
+
     def handle_play(self, game_frame):
         if self.state == 'MM':
             self.state = 'LS'
@@ -86,18 +109,24 @@ class SerpentDragTestGameAgent(GameAgent):
             circles = self.find_sprite(path=self.game.sprite_paths['Circle'], game_frame=game_frame)
             triangles = self.find_sprite(path=self.game.sprite_paths['Triangle'], game_frame=game_frame)
 
-            points = []
+            regions = []
 
             if squares is not None:
-                points.append(self.get_middle(squares[0]))
+                regions.append(squares)
 
             if circles is not None:
-                points.append(self.get_middle(circles[0]))
+                regions.append(circles)
 
             if triangles is not None:
-                points.append(self.get_middle(triangles[0]))
+                regions.append(triangles)
 
-            print(points)
+            if self.old_regions is None:
+                points, old = self.find_points(regions)
+                self.old_regions = old
+            else:
+                points, old = self.find_points(regions, self.old_regions)
+                self.old_regions = old
+
 
             self.drag_mouse(points)
 #             if squares is not None and circles is not None:
