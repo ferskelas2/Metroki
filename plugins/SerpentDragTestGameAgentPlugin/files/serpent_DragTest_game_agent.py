@@ -40,7 +40,7 @@ class SerpentDragTestGameAgent(GameAgent):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         res = cv2.matchTemplate(frame, image, cv2.TM_CCOEFF_NORMED)
-        threshold = .9
+        threshold = .5
         loc = np.where(res >= threshold)
         for pt in zip(*loc[::-1]):  # Switch collumns and rows
             location = [pt[0], pt[1], pt[0] + image.shape[0], pt[1] + image.shape[1]]
@@ -61,6 +61,15 @@ class SerpentDragTestGameAgent(GameAgent):
         y = (region[3] + region[1]) / 2
         return x, y
 
+    def drag_mouse(self, points):
+        for i, point in enumerate(points, start=1):
+            self.input_controller.move(x=point[0], y=point[1])
+            if i == 1:
+                self.input_controller.click_down(MouseButton.LEFT)
+            if i == len(points):
+                self.input_controller.click_up(MouseButton.LEFT)
+        pass
+
     def handle_play(self, game_frame):
         if self.state == 'MM':
             self.state = 'LS'
@@ -72,30 +81,33 @@ class SerpentDragTestGameAgent(GameAgent):
             self.input_controller.click_screen_region(MouseButton.LEFT, "LS_Start")
 
         if self.state == 'GG':
-            # sprite_circle = self.game.sprites['SPRITE_CIRCLE']
-            # sprite_square = self.game.sprites['SPRITE_SQUARE']
-            # square = os.path.dirname(__file__)
-            # print(square)
-            # sprite_triangle = self.game.sprites['SPRITE_TRIANGLE']
-
-            # sprite_locator = SpriteLocator()
-            # print("Trying to find Sprite")
-            # location = sprite_locator.locate(sprite=sprite, game_frame=game_frame)
-            # print(location)
-
-            #print("Trying to find Square")
             game_region = self.game.screen_regions["Game"]
             squares = self.find_sprite(path=self.game.sprite_paths['Square'], game_frame=game_frame)
             circles = self.find_sprite(path=self.game.sprite_paths['Circle'], game_frame=game_frame)
+            triangles = self.find_sprite(path=self.game.sprite_paths['Triangle'], game_frame=game_frame)
 
-            if squares is not None and circles is not None:
-                square = self.get_middle(squares[0])
-                print(squares[0])
-                print(square)
+            points = []
 
-                circle = self.get_middle(circles[0])
-                self.input_controller.drag(MouseButton.LEFT, square[0], square[1], circle[0], circle[1])
-            #     for location in locations:
-            #         print(location)
+            if squares is not None:
+                points.append(self.get_middle(squares[0]))
+
+            if circles is not None:
+                points.append(self.get_middle(circles[0]))
+
+            if triangles is not None:
+                points.append(self.get_middle(triangles[0]))
+
+            print(points)
+
+            self.drag_mouse(points)
+#             if squares is not None and circles is not None:
+#                 square = self.get_middle(squares[0])
+#                 print(squares[0])
+#                 print(square)
+#
+#                 circle = self.get_middle(circles[0])
+#                 self.input_controller.drag(MouseButton.LEFT, square[0], square[1], circle[0], circle[1])
+
+
 
         pass
