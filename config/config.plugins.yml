@@ -1,8 +1,10 @@
 SerpentDragTestGameAgentPlugin:
   frame_handler: PLAY
+SerpentFormsGameAgentPlugin:
+  frame_handler: PLAY
 SerpentMetroKiGameAgentPlugin:
   frame_handler: PLAY
 SerpentTestGameAgentPlugin:
   frame_handler: PLAY
 SerpentminimetroGamePlugin:
-  fps: 2
+  fps: 1
