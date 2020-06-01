@@ -30,12 +30,12 @@ class FormHelper:
             forms.append(form)
         return forms
 
-    def forms_to_regions(self, forms):
+    def forms_to_regions(self, forms, repeating=False):
         regions = []
         for form in forms:
-            region = form.
-            regions .append(form)
-        return forms
+            if 'repeating' not in form.parameters or not form.parameters['repeating'] or repeating and form.parameters['repeating']:
+                regions.append(form.region)
+        return regions
 
     def connect_forms(self, forms):
         previous_connection = None

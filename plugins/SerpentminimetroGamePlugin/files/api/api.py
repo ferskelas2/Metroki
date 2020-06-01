@@ -9,16 +9,9 @@ class minimetroAPI(GameAPI):
 
     # Überprüft ob zwei Regionen überlappen
     def regions_intersect(self, region1, region2):
-        #print(region1)
-        #print(region2)
-        if region1[0] >= region2[2] or region2[0] >= region1[2]:
-         #   print(False)
-            return False
-        if region1[1] <= region2[3] or region2[1] <= region1[3]:
-        #    print(False)
-            return False
-        #print(True)
-        return True
+        if region1[0] < region2[2] and region1[2] > region2[0] and region1[1] < region2[3] and region1[3] > region2[1]:
+            return True
+        return False
 
     # Gibt die Mitte einer Region aus
     def find_middle_point(self, region):
