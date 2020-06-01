@@ -1,5 +1,6 @@
 from serpent.input_controller import MouseButton
 
+
 class Connection:
     def __init__(self, game_agent, form1, form2, previous_connection=None, parameters=None):
         self.game_agent = game_agent
@@ -18,6 +19,7 @@ class Connection:
             return True
         return False
 
+
 class FormHelper:
 
     def __init__(self, game_agent):
@@ -30,11 +32,12 @@ class FormHelper:
             forms.append(form)
         return forms
 
-    def forms_to_regions(self, forms, repeating=False):
+    def forms_to_regions(self, forms):
         regions = []
         for form in forms:
-            if 'repeating' not in form.parameters or not form.parameters['repeating'] or repeating and form.parameters['repeating']:
-                regions.append(form.region)
+            #if 'repeating' not in form.parameters or not form.parameters['repeating'] or repeating and \
+            #       form.parameters['repeating']:
+            regions.append(form.region)
         return regions
 
     def connect_forms(self, forms):
@@ -52,6 +55,12 @@ class FormHelper:
             if i == len(forms):
                 self.game_agent.input_controller.click_up(MouseButton.LEFT)
 
+    def get_repeating(self, forms):
+        out = []
+        for form in forms:
+            if 'repeating' in form.parameters and form.parameters['repeating']:
+                out.append(form)
+        return out
 
 
 class Form:

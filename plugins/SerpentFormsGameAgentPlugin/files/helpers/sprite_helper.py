@@ -13,7 +13,7 @@ class SpriteHelper:
     # game_frame = Der GameFrame, in dem gesucht werden soll
     # screen_region = Eine eingrenzung der zu suchenden Region
     # use_global_location = Ob die Coordinaten relativ zu der ScreenRegion oder zu dem GameFrame angegeben werden sollen
-    def find(self, path, game_frame=None, screen_region=None, use_global_location=True, ignore_regions=[]):
+    def find(self, path, game_frame=None, screen_region=None, use_global_location=True, ignore_regions=[], max=None):
         regions = []
 
         # Den Frame zum suchen vorbereiten
@@ -27,8 +27,10 @@ class SpriteHelper:
 
         res = cv2.matchTemplate(frame, image, cv2.TM_CCOEFF_NORMED)
         # Alle Punkte über einem gewissen threshold auf Gültigkeit überprüfen
-        threshold = .9
+        threshold = .8
         loc = np.where(res >= threshold)
+        #print(ignore_regions)
+        #print(loc)
         for pt in zip(*loc[::-1]):  # Switch collumns and rows
             valid = True
             region = [pt[0], pt[1], pt[0] + image.shape[0], pt[1] + image.shape[1]]
@@ -51,4 +53,6 @@ class SpriteHelper:
                     )
                 ignore_regions.append(region)
                 regions.append(region)
-        return regions
+                if max is not None and len(regions) == max:
+                    return regions, frame
+        return regions, frame

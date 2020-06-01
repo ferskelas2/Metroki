@@ -1,7 +1,9 @@
+import itertools
+import cv2
+from serpent.visual_debugger.visual_debugger import VisualDebugger
 from serpent.game_agent import GameAgent
 from .helpers.sprite_helper import SpriteHelper
 from .helpers.form_helper import FormHelper
-
 
 
 class SerpentFormsGameAgent(GameAgent):
@@ -21,25 +23,38 @@ class SerpentFormsGameAgent(GameAgent):
         pass
 
     def handle_play(self, game_frame):
+        debugger = VisualDebugger()
+        old = [form for forms in self.forms.values() for form in forms]
         forms = []
-        square_regions = self.sprite_helper.find(path=self.game.sprite_paths['Square'], game_frame=game_frame,
-                                                 ignore_regions=[])
+        forms.extend(self.form_helper.get_repeating(old))
+        square_regions, image = self.sprite_helper.find(path=self.game.sprite_paths['Square'], game_frame=game_frame, max=1,
+                                                 ignore_regions=self.form_helper.forms_to_regions(old))
         squares = self.form_helper.regions_to_forms(square_regions, 'Squares', {'repeating': True})
         forms.extend(squares)
-        circle_regions = self.sprite_helper.find(path=self.game.sprite_paths['Circle'], game_frame=game_frame,
-                                                 ignore_regions=self.form_helper.forms_to_regions(self.forms['Circles']))
+        #print('Circles')
+        circle_regions, image = self.sprite_helper.find(path=self.game.sprite_paths['Circle'], game_frame=game_frame, max=1,
+                                                 ignore_regions=self.form_helper.forms_to_regions(old))
         circles = self.form_helper.regions_to_forms(circle_regions, 'Circles')
         forms.extend(circles)
-        triangle_regions = self.sprite_helper.find(path=self.game.sprite_paths['Triangle'], game_frame=game_frame,
-                                                   ignore_regions=self.form_helper.forms_to_regions(self.forms['Triangles']))
+        #print('Triangles')
+        triangle_regions, image = self.sprite_helper.find(path=self.game.sprite_paths['Triangle'], game_frame=game_frame,
+                                                   max=1, ignore_regions=self.form_helper.forms_to_regions(old))
         triangles = self.form_helper.regions_to_forms(triangle_regions, 'Triangles')
         forms.extend(triangles)
 
-        print(self.form_helper.forms_to_regions(forms, repeating=True))
+        #print('Final')
+        #print(self.form_helper.forms_to_regions(forms))
+
+        debugger.store_image_data(image_data=game_frame.frame, image_shape=game_frame.frame.shape,
+                                  bucket="0")
+        debugger.store_image_data(image_data=game_frame.grayscale_frame, image_shape=game_frame.grayscale_frame.shape, bucket="1")
+
+        frame = game_frame.grayscale_frame.copy()
 
         if len(forms) >= 2:
             self.form_helper.connect_forms(forms)
             for form in forms:
-                self.forms[form.type_name].append(form)
+                if form not in self.forms[form.type_name]:
+                    self.forms[form.type_name].append(form)
 
         pass
