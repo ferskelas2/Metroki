@@ -21,17 +21,25 @@ class SerpentFormsGameAgent(GameAgent):
         pass
 
     def handle_play(self, game_frame):
+        forms = []
         square_regions = self.sprite_helper.find(path=self.game.sprite_paths['Square'], game_frame=game_frame,
                                                  ignore_regions=[])
+        squares = self.form_helper.regions_to_forms(square_regions, 'Squares', {'repeating': True})
+        forms.extend(squares)
         circle_regions = self.sprite_helper.find(path=self.game.sprite_paths['Circle'], game_frame=game_frame,
-                                                 ignore_regions=[])
+                                                 ignore_regions=self.form_helper.forms_to_regions(self.forms['Circles']))
+        circles = self.form_helper.regions_to_forms(circle_regions, 'Circles')
+        forms.extend(circles)
         triangle_regions = self.sprite_helper.find(path=self.game.sprite_paths['Triangle'], game_frame=game_frame,
-                                                   ignore_regions=[])
-        forms = []
-        forms.extend(self.form_helper.regions_to_forms(square_regions, 'Square'))
-        forms.extend(self.form_helper.regions_to_forms(circle_regions, 'Circle'))
-        forms.extend(self.form_helper.regions_to_forms(triangle_regions, 'Triangle'))
+                                                   ignore_regions=self.form_helper.forms_to_regions(self.forms['Triangles']))
+        triangles = self.form_helper.regions_to_forms(triangle_regions, 'Triangles')
+        forms.extend(triangles)
 
-        self.form_helper.connect_forms(forms)
+        print(self.form_helper.forms_to_regions(forms, repeating=True))
+
+        if len(forms) >= 2:
+            self.form_helper.connect_forms(forms)
+            for form in forms:
+                self.forms[form.type_name].append(form)
 
         pass

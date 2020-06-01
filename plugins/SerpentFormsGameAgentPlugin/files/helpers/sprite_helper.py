@@ -29,16 +29,15 @@ class SpriteHelper:
         # Alle Punkte über einem gewissen threshold auf Gültigkeit überprüfen
         threshold = .9
         loc = np.where(res >= threshold)
-        #print('ignore')
-        #print(ignore_regions)
         for pt in zip(*loc[::-1]):  # Switch collumns and rows
             valid = True
             region = [pt[0], pt[1], pt[0] + image.shape[0], pt[1] + image.shape[1]]
+            #print('regions')
             #print(region)
             # Überprügt, ob die gefundene Region mit einer der zu ignorierenden Regionen überschneidet
 
             for ignore in ignore_regions:
-                if not self.game_agent.game.api.regions_intersect(region, ignore):
+                if self.game_agent.game.api.regions_intersect(region, ignore):
                     valid = False
                     break
             # Wenn die Region gültig ist zu den gültigen Regionen hinzufügen
