@@ -7,8 +7,6 @@ from .api.api import minimetroAPI
 from serpent.utilities import Singleton
 
 
-
-
 class SerpentminimetroGame(Game, metaclass=Singleton):
 
     # 1360 x 768
@@ -20,14 +18,12 @@ class SerpentminimetroGame(Game, metaclass=Singleton):
         kwargs["app_id"] = "287980"
         kwargs["app_args"] = None
 
-
-
-
         super().__init__(**kwargs)
 
         self.api_class = minimetroAPI
         self.api_instance = None
 
+    # Bild Regionen definieren
     @property
     def screen_regions(self):
         regions = {
@@ -38,6 +34,7 @@ class SerpentminimetroGame(Game, metaclass=Singleton):
 
         return regions
 
+    # Pfade zu den Sprites definieren
     @property
     def sprite_paths(self):
         sprite_path = os.path.join(os.path.dirname(__file__), 'data/sprites')

@@ -1,6 +1,6 @@
 from serpent.input_controller import MouseButton
 
-
+# Eine Verbindung von zwei Formen
 class Connection:
     def __init__(self, game_agent, form1, form2, previous_connection=None, parameters=None):
         self.game_agent = game_agent
@@ -25,6 +25,7 @@ class FormHelper:
     def __init__(self, game_agent):
         self.game_agent = game_agent
 
+    # Wandelt eine Liste an Regionen in eine Liste von Formen um
     def regions_to_forms(self, regions, type_name, parameters=None):
         forms = []
         for region in regions:
@@ -32,14 +33,14 @@ class FormHelper:
             forms.append(form)
         return forms
 
+    # Wandelt eine Liste an Formen in eine Liste von Regionen um
     def forms_to_regions(self, forms):
         regions = []
         for form in forms:
-            #if 'repeating' not in form.parameters or not form.parameters['repeating'] or repeating and \
-            #       form.parameters['repeating']:
             regions.append(form.region)
         return regions
 
+    # Verbindet alle Formen in der Liste untereinander
     def connect_forms(self, forms):
         previous_connection = None
         previous_form = None
@@ -55,6 +56,7 @@ class FormHelper:
             if i == len(forms):
                 self.game_agent.input_controller.click_up(MouseButton.LEFT)
 
+    # Gibt alle Formen in der Liste aus, die den Parameter 'repeating' haben
     def get_repeating(self, forms):
         out = []
         for form in forms:
@@ -75,12 +77,15 @@ class Form:
         else:
             self.parameters = {}
 
+    # Gibt den Mittelpunkt der Form aus
     def get_middle(self):
         return self.game_agent.game.api.find_middle_point(self.region)
 
+    # Überprüft ob die Form sich mit einer anderen Form schneidet
     def intersects_form(self, form):
         return self.game_agent.game.api.regions_intersect(self.region, form.region)
 
+    # Überprüft ob die Form mit einer anderen Verbunden ist
     def is_connected(self):
         if len(self.connections) != 0:
             return True

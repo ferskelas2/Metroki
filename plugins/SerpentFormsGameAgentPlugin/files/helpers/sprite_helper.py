@@ -13,6 +13,8 @@ class SpriteHelper:
     # game_frame = Der GameFrame, in dem gesucht werden soll
     # screen_region = Eine eingrenzung der zu suchenden Region
     # use_global_location = Ob die Coordinaten relativ zu der ScreenRegion oder zu dem GameFrame angegeben werden sollen
+    # ignore_regions = Regionen, die ignoriert werden sollen
+    # max = Wieviele vorkommnisse des Bildes maximal gefunden werden sollen
     def find(self, path, game_frame=None, screen_region=None, use_global_location=True, ignore_regions=[], max=None):
         regions = []
 

@@ -19,12 +19,7 @@ class minimetroAPI(GameAPI):
         y = (region[3] + region[1]) / 2
         return x, y
 
+    # Gibt die Distanz zwischen zwei Punkten aus
     def get_distance(self, point1, point2):
         dist = math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
         return dist
-
-    class MyAPINamespace:
-
-        @classmethod
-        def my_namespaced_api_function(cls):
-            api = minimetroAPI.instance
